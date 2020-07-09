@@ -4,12 +4,15 @@ class TieBreaker
         tied_players.each do |player|
             tie_breaking_values << [tie_breaking_value(player), player]
         end
-        tie_breaking_values.sort[0][1]
+        tie_breaking_values.sort!
+        # IF TIE BREAKING VALUE TIES TOO, SPLIT THE POT
     end
 
     def self.tie_breaking_value(player)
         case PokerHands.best_hand(player.hand)
-        when :royal_flush || :straight_flush || :full_house || 
+        when :royal_flush
+            # NO BREAKER, SPLIT THE POT
+        when :straight_flush || :full_house || 
                 :flush || :straight || :high_card
             high_card(player.hand)
         when :four_of_a_kind
@@ -17,7 +20,7 @@ class TieBreaker
         when :three_of_a_kind
             highest_of_set(player.hand, 3)
         when :two_pair
-            # highest of the pairs
+            highest_of_two_pair(player.hand)
         when :one_pair
             highest_of_set(player.hand, 2)
         end
