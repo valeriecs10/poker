@@ -27,7 +27,7 @@ class Deck
     def new_set(suit)
         set = []
 
-        (1..13).each do |i|
+        (2..14).each do |i|
             set << Card.new(i, suit)
         end
 
