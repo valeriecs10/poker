@@ -14,4 +14,8 @@ class Hand
     def []=(card)
         cards[i] = card
     end
+
+    def num_cards
+        @cards.length
+    end
 end
