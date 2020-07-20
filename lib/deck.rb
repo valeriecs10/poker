@@ -16,6 +16,10 @@ class Deck
         cards.shuffle! if shuffled
     end
     
+    def num_cards
+        cards.length
+    end
+
     private
     
     def new_deck
