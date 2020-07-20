@@ -31,6 +31,10 @@ class Player
         end
     end
 
+    def num_cards
+        hand.cards.length
+    end
+
     private
 
     def get_user_cards
