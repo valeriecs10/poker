@@ -15,12 +15,14 @@ class Game
     end
 
     def play
-        deal
-        collect_bets
-        discards
-        collect_bets
-        determine_winner
-        payout
+        until game_over?
+            deal
+            collect_bets
+            discards
+            collect_bets
+            determine_winner
+            payout
+        end
     end
     
     def current_player
@@ -33,7 +35,13 @@ class Game
     
     def deal
         deck.shuffle
-        5.times { players.each { |player| deal_card(player) } }
+        5.times { players.each { |player| deal_card(player) unless player.pot == 0 } }
+    end
+
+    def game_over?
+        has_money = 0
+        players.each { |player| has_money += 1 if player.pot > 0 }
+        has_money < 2
     end
 
     # private
@@ -77,9 +85,17 @@ class Game
     
     def make_remaining_bet(player)
         remaining_bet = INITIAL_BET + raise_amount - current_bets[player]
-        player.pot -= remaining_bet
-        pot += remaining_bet
+        collect_from_bankroll(player,remaining_bet)
+        add_to_pot(remaining_bet)
         current_bets[player] += remaining_bet
+    end
+
+    def add_to_pot(amount)
+        @pot += amount
+    end
+
+    def collect_from_bankroll(player, amount)
+        player.pot -= amount
     end
     
     def player_fold(player)

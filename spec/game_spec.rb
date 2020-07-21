@@ -2,7 +2,7 @@ require 'rspec'
 require 'game'
 
 describe 'Game' do
-    subject(:game) { Game.new(Player.new(10), Player.new(10), Player.new(10)) }
+    subject(:game) { Game.new(Player.new(10), Player.new(20), Player.new(10)) }
 
     describe '#deck' do
         it 'is a Deck' do
@@ -13,7 +13,6 @@ describe 'Game' do
     describe '#players' do
         it 'creates the right number of Players' do
             expect(game.players.length).to eq(3)
-            expect(game.players).to all(be_a(Player))
         end
     end
 
@@ -21,13 +20,6 @@ describe 'Game' do
         it 'starts at 0' do
             expect(game.pot).to eq(0)
         end
-    end
-    
-    describe '#take_bets' do
-    end
-
-    describe '#pot' do
-        it 'increments correctly after bets'
     end
 
     describe '#current_player' do
@@ -37,11 +29,9 @@ describe 'Game' do
     end
 
     describe '#next_player' do
-        let(:player2_id) { game.players[1].object_id }
-        
         it 'rotates the players array' do
             game.next_player
-            expect(game.players[0].object_id).to eq(player2_id)
+            expect(game.players[0].pot).to eq(20)
         end
     end
 
@@ -57,6 +47,25 @@ describe 'Game' do
             game.deal
             expect(game.deck.num_cards).to eq(37)
         end
+
+        it 'does not deal to players with no money' do
+            game.players[0].pot = 0
+            game.deal
+            expect(game.players[0].num_cards).to eq(0)
+        end
+    end
+
+    describe '#add_to_pot' do
+        it 'adds the correct amount to the pot' do
+            expect { game.add_to_pot(20) }.to change { game.pot }.by(20)
+        end
+    end
+
+    describe '#collect_from_bankroll' do
+        let(:player1) { game.players[0] }
+        it 'subtracts the correct amount from player bankroll' do
+            expect { game.collect_from_bankroll(player1, 10) }.to change { player1.pot }.by(-10)
+        end 
     end
 
     describe '#replace_discarded' do
@@ -70,30 +79,16 @@ describe 'Game' do
         end
     end
 
-    describe ''
-
-    describe '#play' do
-        it 'deals the cards' do
-            expect(game).to receive(:deal)
-            game.play
+    describe '#game_over?' do
+        it 'returns false when more than 1 player has money left' do
+            expect(game.game_over?).to eq(false)
         end
 
-        it 'takes bets from all players' do
-            expect(game.players).to all(receive(:fold_see_raise))
-            game.play
+        it 'returns true when only 1 player has money left' do
+            game.collect_from_bankroll(game.players[0], 10)
+            game.collect_from_bankroll(game.players[1], 20)
+            expect(game.game_over?).to eq(true)
         end
-
-        it 'allows each player to discard cards' do
-            expect(game.players).to all(receive(:cards_to_discard))
-            game.play
-        end
-
-        it 'replaces discarded cards' do
-            expect(game).to receive(:replace_discarded).with(game.players[0])
-            expect(game).to receive(:replace_discarded).with(game.players[1])
-            expect(game).to receive(:replace_discarded).with(game.players[2])
-            game.play
-        end
-
     end
+
 end
