@@ -17,7 +17,36 @@ describe 'Deck' do
         it 'should contain all Cards' do
             expect(deck.cards).to all(be_a(Card))
         end
-
-        it 'should shuffle the cards upon initializing'
     end
+
+    describe '#shuffle' do
+    let!(:first_card) { deck.cards[0] }
+
+        it 'should shuffle the cards' do
+            deck.shuffle
+            expect(deck.cards[0]).to_not eq(first_card)
+        end
+    end
+
+    describe '#deal_card' do
+        it 'returns a card' do
+            expect(deck.deal_card).to be_a(Card)
+        end
+
+        it 'removes a card from the deck' do
+            expect { deck.deal_card }.to change { deck.cards.length }.by(-1)
+        end
+    end
+
+    describe '#return_to_deck' do
+        let(:card) { deck.deal_card }
+        
+        it 'adds the passed card to the deck' do
+            expect(deck.cards.include?(card)).to eq(false)
+            deck.return_to_deck(card)
+            expect(deck.cards.include?(card)).to eq(true)
+        end
+    end
+
+    describe '#deal_card'
 end

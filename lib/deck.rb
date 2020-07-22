@@ -13,11 +13,23 @@ class Deck
     
     def initialize(shuffled = true)
         @cards = new_deck
-        cards.shuffle! if shuffled
+        shuffle if shuffled
     end
     
     def num_cards
         cards.length
+    end
+
+    def shuffle
+        cards.shuffle!
+    end
+
+    def return_to_deck(card)
+        cards.unshift(card)
+    end
+
+    def deal_card
+        cards.pop
     end
 
     private
