@@ -48,5 +48,4 @@ describe 'Deck' do
         end
     end
 
-    describe '#deal_card'
 end
