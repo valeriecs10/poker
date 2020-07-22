@@ -10,14 +10,15 @@ class Player
     end
 
     def cards_to_discard
+        discards = []
         user_input = get_user_cards
         return 0 if user_input[0] == 0
         card_indexes = user_input.map { |i| i -= 1 }
         card_indexes.sort!.reverse!
         card_indexes.each do |i|
-            hand.cards.delete_at(i)
+            discards << hand.cards[i]
         end
-        card_indexes.length
+        discards
     end
 
     def fold_see_raise
