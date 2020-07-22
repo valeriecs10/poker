@@ -1,7 +1,8 @@
 require_relative 'hand'
 
 class Player
-    attr_reader :hand, :pot
+    attr_reader :hand
+    attr_accessor :pot
 
     def initialize(pot)
         @hand = Hand.new
