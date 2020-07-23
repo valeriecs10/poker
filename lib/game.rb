@@ -4,11 +4,12 @@ require_relative 'deck'
 class Game
     INITIAL_BET = 2
     attr_reader :deck, :players, :active_players, :pot, :raise_amount, :current_bets
+    attr_accessor :active_players
 
     def initialize(*players)
         @deck = Deck.new
         @players = players
-        @active_players = players
+        @active_players = players.dup
         @pot = 0 
         @raise_amount = 0
         @current_bets = Hash.new(0)
@@ -22,6 +23,7 @@ class Game
             collect_bets
             determine_winner
             payout
+            reset_players
         end
     end
     
@@ -35,20 +37,17 @@ class Game
     
     def deal
         deck.shuffle
-        5.times { players.each { |player| deal_card(player) unless player.pot == 0 } }
+        5.times { players.each do |player| 
+            deck.deal_card(player) unless player.pot == 0 
+        end
+        }
     end
 
     def game_over?
-        has_money = 0
-        players.each { |player| has_money += 1 if player.pot > 0 }
-        has_money < 2
+        active_players.length < 2
     end
 
     # private
-    
-    def deal_card(player)
-        player.hand.cards << deck.cards.pop
-    end
     
     def collect_bets
         all_current = false
@@ -99,7 +98,7 @@ class Game
     end
     
     def player_fold(player)
-        players.delete(player)
+        active_players.delete(player)
     end
     
     def discards 
@@ -110,12 +109,18 @@ class Game
     end
 
     def collect_discarded(player)
-        player.cards_to_discard
+        discards = player.cards_to_discard
+        discards.each { |card| deck.return_to_deck(card) }
     end
     
     def replace_discarded(player)
         cards_needed = 5 - player.num_cards
-        cards_needed.times { deal_card(player) }
+        cards_needed.times { deck.deal_card(player) }
+    end
+
+    def reset_players
+        active_players.clear
+        players.each { |player| active_players << player.dup if player.pot > 0 }
     end
 
 end

@@ -73,20 +73,29 @@ describe 'Game' do
         let(:needs_cards) { double('player', :hand => player_hand) }
         
         it 'replaces discarded cards' do
-            allow(needs_cards).to receive(:num_cards).and_return(needs_cards.hand.cards.length)
+            allow(needs_cards).to receive(:num_cards).and_return(player_hand.cards.length)
             game.replace_discarded(needs_cards)
             expect(needs_cards.hand.cards.length).to eq(5)
         end
     end
 
+    describe 'reset_players' do
+        it 'puts all players with money in active_players' do
+            game.players[0].pot = 0
+            game.reset_players
+            expect(game.active_players.length).to eq(2)
+        end
+    end
+
     describe '#game_over?' do
-        it 'returns false when more than 1 player has money left' do
+        it 'returns false when more than 1 player is active' do
             expect(game.game_over?).to eq(false)
         end
 
-        it 'returns true when only 1 player has money left' do
+        it 'returns true when only 1 player is active' do
             game.collect_from_bankroll(game.players[0], 10)
             game.collect_from_bankroll(game.players[1], 20)
+            game.reset_players
             expect(game.game_over?).to eq(true)
         end
     end
