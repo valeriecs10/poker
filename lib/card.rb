@@ -7,7 +7,7 @@ class Card
     end
 
     def to_s
-        p "| #{printed_val} #{printed_suit} |"
+        "| #{printed_val} #{printed_suit} | "
     end
 
     private
