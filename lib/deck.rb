@@ -28,8 +28,8 @@ class Deck
         cards.unshift(card)
     end
 
-    def deal_card
-        cards.pop
+    def deal_card(player)
+        player.hand.cards << @cards.pop
     end
 
     private

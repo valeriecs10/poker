@@ -29,17 +29,22 @@ describe 'Deck' do
     end
 
     describe '#deal_card' do
-        it 'returns a card' do
-            expect(deck.deal_card).to be_a(Card)
+        let(:hand) { double('hand', :cards => []) }
+        let(:player) { double('player', :hand => hand) }
+
+        it 'adds a card to players hand' do
+            expect { deck.deal_card(player) }.to change { hand.cards.length }.by(1)
         end
 
         it 'removes a card from the deck' do
-            expect { deck.deal_card }.to change { deck.cards.length }.by(-1)
+            expect { deck.deal_card(player) }.to change { deck.cards.length }.by(-1)
         end
     end
 
     describe '#return_to_deck' do
-        let(:card) { deck.deal_card }
+        let(:hand) { double('hand', :cards => []) }
+        let(:player) { double('player', :hand => hand) }
+        let(:card) { deck.deal_card(player) }
         
         it 'adds the passed card to the deck' do
             expect(deck.cards.include?(card)).to eq(false)
