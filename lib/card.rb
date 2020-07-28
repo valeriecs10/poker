@@ -14,8 +14,6 @@ class Card
 
     def printed_val
         case value
-        when 1
-            'A'
         when 2..10
             value.to_s
         when 11
@@ -24,6 +22,8 @@ class Card
             'Q'
         when 13
             'K'
+        when 14
+            'A'
         end
     end
 
