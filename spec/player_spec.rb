@@ -22,22 +22,22 @@ describe 'Player' do
         
     describe '#cards_to_discard' do
         let(:card1) { double("card1") }
-        let(:card2) { double("card1") }
-        let(:card3) { double("card1") }
-        let(:card4) { double("card1") }
-        let(:card5) { double("card1") }
+        let(:card2) { double("card2") }
+        let(:card3) { double("card3") }
+        let(:card4) { double("card4") }
+        let(:card5) { double("card5") }
         
         before(:each) { player.hand.cards = [card1, card2, card3, card4, card5] }
 
         it 'calls #get_user_cards' do
-            allow(player).to receive(:get_user_cards).and_return(0)
+            allow(player).to receive(:get_user_cards).and_return(nil)
             expect(player).to receive(:get_user_cards)
             player.cards_to_discard
         end
 
         context 'no cards discarded' do
             it 'does not change hand' do
-                allow(player).to receive(:get_user_cards).and_return([0])
+                allow(player).to receive(:get_user_cards).and_return(nil)
                 player.cards_to_discard
                 expect(player.hand.cards.length).to eq(5)
             end
@@ -49,7 +49,13 @@ describe 'Player' do
                 player.cards_to_discard
                 expect(player.hand.cards.length).to eq(3)
             end
+
+            it 'returns discarded cards' do
+                allow(player).to receive(:get_user_cards).and_return([2, 3])
+                expect(player.cards_to_discard).to eq([card3, card2])
+            end
         end
+
     end
     
     describe '#fold_see_raise' do
