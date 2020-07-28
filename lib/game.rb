@@ -2,8 +2,6 @@ require_relative 'player'
 require_relative 'deck'
 require_relative 'poker_hands'
 
-require 'byebug'
-
 class Game
     INITIAL_BET = 2
     attr_reader :deck, :players, :active_players, :current_bets
