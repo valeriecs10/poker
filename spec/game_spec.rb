@@ -28,13 +28,6 @@ describe 'Game' do
         end
     end
 
-    describe '#next_player' do
-        it 'rotates the players array' do
-            game.next_player
-            expect(game.players[0].pot).to eq(20)
-        end
-    end
-
     describe '#deal' do
         it 'puts 5 cards in each players hand' do
             game.deal
