@@ -1,7 +1,5 @@
 require_relative 'tie_breaker'
 
-require 'byebug'   
-
 class PokerHands
     HAND_RANKINGS = {
         royal_flush: 10,
