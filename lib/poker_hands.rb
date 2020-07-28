@@ -1,3 +1,7 @@
+require_relative 'tie_breaker'
+
+require 'byebug'   
+
 class PokerHands
     HAND_RANKINGS = {
         royal_flush: 10,
@@ -13,20 +17,22 @@ class PokerHands
     }
 
     def self.winner(players)
+        return players[0] if players.length == 1
         player_best_hands = []
-
         # build array of players and their highest rank
         players.each do |player|
-            player_hands << [HAND_RANKINGS[player.best_hand], player]
+            player_best_hands << [HAND_RANKINGS[best_hand(player)], player]
         end
+        player_best_hands.sort_by! { |arr| arr[0] }.reverse!
 
         # return player with top ranking hand, unless there is a tie
-        return player_hands[0][1] unless player_hands[0][0] == player_hands[1][0]
+        return player_best_hands[0][1] unless player_best_hands[0][0] == player_best_hands[1][0]
 
         TieBreaker.break_tie(players)
     end
 
-    def self.best_hand(hand)
+    def self.best_hand(player)
+        hand = player.hand
         return :royal_flush if royal_flush?(hand)
         return :straight_flush if straight_flush?(hand)
         return :four_of_a_kind if four_of_a_kind?(hand)
